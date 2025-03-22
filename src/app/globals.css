@@ -3,6 +3,7 @@
   --Bsecondary:#2F327D;
   --BSelect:#F48C06;
   --BOther:#23BDEE;
+  --Bgray:#696984;
   --Bgradient:linear-gradient(90deg, #136CB5 0%, #49BBBD 100%);
 }
 @import "tailwindcss";

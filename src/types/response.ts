@@ -38,4 +38,6 @@ export type TUser = {
   accountStatus: 'active' | 'block'
   referencedModel: 'teacher' | 'student'
   referencedUser?: ITeacher
+  createdAt: string
+  updatedAt: string
 }

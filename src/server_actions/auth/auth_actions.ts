@@ -4,6 +4,7 @@ import { TResponse, TUser } from '@/types'
 import { cookies } from 'next/headers'
 import { FieldValues } from 'react-hook-form'
 import { jwtDecode } from 'jwt-decode'
+import { revalidateTag } from 'next/cache'
 // login a user
 export const loginUser = async (data: FieldValues) => {
   const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/auth/login`, {
@@ -16,6 +17,7 @@ export const loginUser = async (data: FieldValues) => {
   const result = (await res.json()) as TResponse
   if (result.success) {
     ;(await cookies()).set('accessToken', result.data.accessToken)
+    revalidateTag('logedUser')
   }
   return result
 }
@@ -41,7 +43,8 @@ export const getLogedUser = async () => {
   if (res) {
     decoded = await jwtDecode(res)
     const user = await fetch(
-      `${process.env.NEXT_PUBLIC_SERVER_URL}/teacher/${decoded.userEmail}`
+      `${process.env.NEXT_PUBLIC_SERVER_URL}/teacher/${decoded.userEmail}`,
+      { next: { tags: ['logedUser'] } }
     )
     const result = await user.json()
     return result?.data as TUser
@@ -53,6 +56,7 @@ export const getLogedUser = async () => {
 export const logOutUser = async () => {
   try {
     ;(await cookies()).delete('accessToken')
+    revalidateTag('logedUser')
     return true
   } catch (error) {
     console.log(error)
